@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<ruleset name="Loyalty Rules"
+  xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+  <description>Custom rule set</description>
+   <rule ref="category/java/codestyle.xml">
+    <exclude name="LongVariable"/>
+    <exclude name="ShortVariable"/>
+    <exclude name="ShortClassName"/>
+    <exclude name="AtLeastOneConstructor"/>
+    <exclude name="OnlyOneReturn"/>
+    <exclude name="GenericsNaming"/>
+  </rule>
+  <rule ref="category/java/bestpractices.xml"/>
+  <rule ref="category/java/design.xml">
+    <!-- The idea of LawOfDemeter is elegant but the implementation blocking using Java 8 stream API due to violate chaining rule-->
+    <exclude name="LawOfDemeter"/>
+    <exclude name="ExcessiveImports"/>
+    <exclude name="TooManyFields"/>
+    <exclude name="TooManyMethods"/>
+    <exclude name="CouplingBetweenObjects"/>
+    <!-- Disable WARNING "Removed misconfigured rule: LoosePackageCoupling cause: No packages or classes specified" -->
+    <exclude name="LoosePackageCoupling"/>
+  </rule>
+  <rule ref="category/java/performance.xml"/>
+  <rule ref="category/java/security.xml"/>
+  <rule ref="category/java/errorprone.xml">
+    <exclude name="BeanMembersShouldSerialize"/>
+  </rule>
+</ruleset>

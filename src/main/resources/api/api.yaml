@@ -1,0 +1,12 @@
+openapi: 3.0.0
+info:
+  description: API specification
+  version: 1.0.0
+  title: Notification service
+servers:
+  - url: 'http://localhost:8060//'
+    description: Local
+
+paths:
+  /notifications:
+    $ref: "notifications.yaml#/notifications"

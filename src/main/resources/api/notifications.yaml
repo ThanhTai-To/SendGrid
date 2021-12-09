@@ -1,0 +1,14 @@
+notifications:
+  post:
+    tags:
+      - emails
+    summary: Send email
+    operationId: sendEmail
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: 'domains.yaml#/components/schemas/SendEmailRequest'
+    responses:
+      204:
+        description: No content

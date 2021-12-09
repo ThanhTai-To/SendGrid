@@ -1,0 +1,11 @@
+server:
+  port: 8060
+app:
+  sendgrid:
+    api-key:
+    tracking-setting:
+      substitution-tag: '%open-track%'
+mongock:
+  enabled: true
+  change-logs-scan-package:
+    - com.ptc.sendgrid.changlog

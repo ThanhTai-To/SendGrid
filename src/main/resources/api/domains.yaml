@@ -1,0 +1,31 @@
+components:
+  schemas:
+    Account:
+      title: Account
+      properties:
+        email:
+          type: string
+        name:
+          type: string
+    EmailModel:
+      title: EmailModel
+      properties:
+        from:
+          $ref: '#/components/schemas/Account'
+        toEmails:
+          type: array
+          items:
+            $ref: '#/components/schemas/Account'
+        ccEmails:
+          type: array
+          items:
+            $ref: '#/components/schemas/Account'
+        bccEmails:
+          type: array
+          items:
+            $ref: '#/components/schemas/Account'
+        subject:
+          type: string
+    SendEmailRequest:
+      allOf:
+        - $ref: '#/components/schemas/EmailModel'

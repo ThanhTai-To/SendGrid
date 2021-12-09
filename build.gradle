@@ -1,0 +1,133 @@
+plugins {
+    id 'org.springframework.boot' version '2.5.3'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+    id 'jacoco'
+    id 'pmd'
+    id 'org.openapi.generator' version '5.2.1' apply true
+}
+
+group = 'com.ptc.sendgrid'
+version = 'send-grid'
+sourceCompatibility = '11'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    springCloudVersion = "2020.0.3"
+    mapstructVersion = "1.4.2.Final"
+    lombokMapstructVersion = "0.2.0"
+    swaggerVersion = "1.5.0"
+    springfoxVersion = "2.9.2"
+    mongockVersion = "4.3.4"
+    mongodbDriverSyncVersion = "4.2.3"
+    commonLangVersion = "3.12.0"
+    commonsCollections4Version = "4.0"
+    testcontainersVersion = "1.16.2"
+    jnaPlatformVersion = "5.10.0"
+    testcontainersVersion = "1.16.2"
+    twilioVersion = "8.23.0"
+    sendGridVerion = "4.8.1"
+    freemarkerVerion = "2.6.1"
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation 'org.springframework.cloud:spring-cloud-stream'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-freemarker'
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    implementation "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructVersion}"
+    implementation "com.github.cloudyrock.mongock:mongock-bom:${mongockVersion}"
+    implementation "com.github.cloudyrock.mongock:mongock-spring-v5:${mongockVersion}"
+    implementation "com.github.cloudyrock.mongock:mongodb-springdata-v3-driver:${mongockVersion}"
+    implementation "com.twilio.sdk:twilio:${twilioVersion}"
+    implementation "com.sendgrid:sendgrid-java:${sendGridVerion}"
+    implementation "org.mongodb:mongodb-driver-sync:${mongodbDriverSyncVersion}"
+    implementation "org.apache.commons:commons-lang3:${commonLangVersion}"
+    implementation "org.apache.commons:commons-collections4:${commonsCollections4Version}"
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation "io.swagger:swagger-annotations:${swaggerVersion}"
+    implementation "io.springfox:springfox-swagger2:${springfoxVersion}"
+    implementation platform("org.testcontainers:testcontainers-bom:${testcontainersVersion}")
+
+    compileOnly 'org.projectlombok:lombok'
+
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation "org.testcontainers:testcontainers"
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.cloud:spring-cloud-stream-test-support'
+    testImplementation "net.java.dev.jna:jna-platform:${jnaPlatformVersion}"
+
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
+    }
+}
+
+pmd {
+    consoleOutput = true
+    ignoreFailures = false
+    toolVersion = "6.37.0"
+    rulesMinimumPriority = 5
+    ruleSets = [file("quality/pmd.xml")]
+}
+
+
+openApiGenerate {
+    generatorName = "spring"
+    library = "spring-boot"
+    inputSpec = "$projectDir/src/main/resources/api/api.yaml".toString()
+    apiPackage = "com.ptc.sendgrid.api.gen"
+    modelPackage = "com.ptc.sendgrid.api.gen.model"
+    apiFilesConstrainedTo = [""]
+    modelFilesConstrainedTo = [""]
+    configOptions = [
+            dateLibrary: "java8",
+            interfaceOnly: "true",
+            useTags: "true",
+            openApiNullable: "false",
+            skipDefaultInterface: "true",
+            generatePom: "false",
+            useBeanValidation: "false"
+    ]
+}
+
+sourceSets {
+    main {
+        java.srcDir "${buildDir}/generated/sources/annotation/main/java"
+        java.srcDir "${buildDir}/generate-resources/main/src/main/java"
+    }
+    test {
+        resources {
+            srcDir "$projectDir/src/test"
+        }
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+compileJava.dependsOn(tasks.openApiGenerate)
+
+tasks.withType(Pmd) {
+    exclude '**/com/ptc/sendgrid/api/gen/**/*.*'
+    exclude '**/com/ptc/sendgrid/mapper/*MapperImpl.*'
+}
+
+test {
+    useJUnitPlatform()
+}
